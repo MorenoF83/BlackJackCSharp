@@ -1,5 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
+
+/*Felix Moreno
+ *Blackjack program in C#
+*/
 
 namespace BlackJackSharp
 {
@@ -7,12 +11,18 @@ namespace BlackJackSharp
     {
         static void Main(string[] args)
         {
-            Cards cardsUser = new Cards(0, new ArrayList());
-            Cards cardsDealer = new Cards(0, new ArrayList());
-            printRules();
-            shortcut("User", cardsUser);
-            shortcut("Dealer", cardsDealer);
-            hitQuestion(cardsUser, cardsDealer);
+            int flag = 0;
+            while(flag == 0)
+            {
+                Cards cardsUser = new Cards(0, new ArrayList());
+                Cards cardsDealer = new Cards(0, new ArrayList());
+                printRules();
+                shortcut("User", cardsUser);
+                shortcut("Dealer", cardsDealer);
+                hitQuestion(cardsUser, cardsDealer);
+                encore();
+                Console.Clear();
+            } 
         }
 
         public static void hitQuestion(Cards cardsUser, Cards cardsDealer)
@@ -73,12 +83,32 @@ namespace BlackJackSharp
         {
             Random rand = new Random();
             int num = rand.Next(1, 14);
-            cards.Sum += num;
+            if (num > 10 || num == 1) cards.Sum += 10;
+            else cards.Sum += num;
             string result = faceCards(num);
             cards.CardsHand.Add(result);
+            foreach (string card in cards.CardsHand)
+            {
+                if(card.Equals('A') && cards.Sum > 21)
+                {
+                    cards.Sum -= 9;
+                }
+            }
             Console.WriteLine(" hits " + result);
         }
         
+        public static void encore()
+        {
+            int flag = 0;
+            Console.WriteLine("Again?" + Environment.NewLine + "Type AGAIN to stay! Or EXIT to quit!");
+            do
+            {
+                string input = Console.ReadLine();
+                exitCheck(input);
+                if (input.Equals("AGAIN")) break;
+                else Console.WriteLine("Wrong input!");
+            } while (flag == 0);
+        }
         public static void printHand(string name, Cards cards)
         {
             Console.WriteLine(name + " has a total of: " + cards.Sum);
